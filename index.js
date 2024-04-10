@@ -4,14 +4,15 @@ app.use(express.json());
 
 
 
-
 const logHoraMiddleware = (req, res, next) => {
     const horaAtual = new Date().toISOString();
     console.log(
-      `[${horaAtual}] Nova solicitação recebida para: ${req.method} ${req.originalUrl}`
-      );
+        `[${horaAtual}] Nova solicitação recebida para: ${req.method} ${req.originalUrl}`
+    );
     next(); 
 };
+
+app.use(logHoraMiddleware);
 
 let produtos = []
 
@@ -30,7 +31,7 @@ app.get('/produtos/:id', (req, res) => {
 });
 
 
-app.post('/produtos', (req, res) => {
+app.post('/produtos', (req, res,next) => {
     try {
             const produto = req.body;
     
@@ -55,7 +56,7 @@ app.put('/produtos/:id', (req, res) => {
         res.status(200).send('Produto adicionado com sucesso.');
     });
     
-    app.delete('/produtos:id', (req, res) => {
+    app.delete('/produtos/:id', (req, res) => {
         const { id } = req.params;
         const index = produtos.findIndex(produto => produto.id === parseInt(id));
         if (index === -1) {
@@ -65,10 +66,6 @@ app.put('/produtos/:id', (req, res) => {
         produtos.splice(index, 1);
         res.status(200).send('Produto deletado com sucesso.');
     });
-
-    
-    
-    
     
     app.listen(3000, function(){
         console.log("Servidor Rodando")
